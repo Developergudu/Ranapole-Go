@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pole Meter - Live Voting</title>
+    <title>Pole Meter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pole Meter - Live Voting</h1>
-    <div id="poll-container">
-        <h2>Current Poll</h2>
-        <div id="options"></div>
-    </div>
-    
-    <div id="timer-container">
-        <button onclick="setTimer(45)">45 sec</button>
-        <button onclick="setTimer(30)">30 sec</button>
-        <button onclick="setTimer(60)">1 min</button>
-        <button onclick="setTimer(0)">Unlimited</button>
+    <div class="container">
+        <h1>🗳️ Pole Meter</h1>
+        
+        <!-- Form to Add New Poll -->
+        <div id="poll-setup">
+            <input type="text" id="poll-question" placeholder="Enter your question">
+            <div id="options-container">
+                <input type="text" class="poll-option" placeholder="Option 1">
+                <input type="text" class="poll-option" placeholder="Option 2">
+            </div>
+            <button id="add-option">➕ Add Option</button>
+            <button id="start-poll">🚀 Start Poll</button>
+        </div>
+
+        <!-- Poll Display -->
+        <div id="poll-container" style="display: none;">
+            <h2 id="question">Loading question...</h2>
+            <div id="options"></div>
+        </div>
     </div>
 
-    <button onclick="resetPoll()">Reset Poll</button>
-    <a href="history.html"><button>View History</button></a>
-
-    <script src="firebase-config.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
