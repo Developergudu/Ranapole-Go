@@ -1,48 +1,99 @@
-import { db, ref, set, get, onValue } from "./firebase-config.js";
+// Import Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-const optionsContainer = document.getElementById("options");
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAbH67CgYGYJv4FXrtWYKiWA8ACTXK5shE",
+  authDomain: "pol-me.firebaseapp.com",
+  databaseURL: "https://pol-me-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pol-me",
+  storageBucket: "pol-me.firebasestorage.app",
+  messagingSenderId: "447211103879",
+  appId: "1:447211103879:web:2a9362f2470a10663aba22"
+};
 
-// Default poll options
-const pollOptions = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5", "Option 6"];
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-// Display options dynamically
-function renderOptions() {
-    optionsContainer.innerHTML = "";
-    pollOptions.forEach((option, index) => {
-        const btn = document.createElement("button");
-        btn.innerText = option;
-        btn.onclick = () => vote(index);
-        optionsContainer.appendChild(btn);
-    });
-}
-
-// Function to vote
-function vote(optionIndex) {
-    const voteRef = ref(db, "votes/" + optionIndex);
-    get(voteRef).then((snapshot) => {
-        let currentVotes = snapshot.exists() ? snapshot.val() : 0;
-        set(voteRef, currentVotes + 1);
-    });
-}
-
-// Listen for vote updates
-onValue(ref(db, "votes"), (snapshot) => {
-    if (snapshot.exists()) {
-        let votes = snapshot.val();
-        console.log("Votes updated:", votes);
-    }
+// Poll Setup
+document.getElementById("add-option").addEventListener("click", () => {
+    let newInput = document.createElement("input");
+    newInput.type = "text";
+    newInput.className = "poll-option";
+    newInput.placeholder = `Option ${document.querySelectorAll(".poll-option").length + 1}`;
+    document.getElementById("options-container").appendChild(newInput);
 });
 
-// Set timer
-function setTimer(seconds) {
-    if (seconds === 0) return alert("Unlimited voting enabled!");
-    setTimeout(() => alert("Voting time is over!"), seconds * 1000);
+// Start Poll
+document.getElementById("start-poll").addEventListener("click", () => {
+    let question = document.getElementById("poll-question").value;
+    let options = [...document.querySelectorAll(".poll-option")].map(input => input.value).filter(opt => opt.trim() !== "");
+
+    if (!question || options.length < 2) {
+        alert("Enter a question and at least 2 options!");
+        return;
+    }
+
+    set(ref(db, "poll/"), { question, options, votes: {} });
+    loadPoll();
+});
+
+// Load Poll
+function loadPoll() {
+    get(ref(db, "poll/")).then(snapshot => {
+        if (snapshot.exists()) {
+            let data = snapshot.val();
+            document.getElementById("question").innerText = data.question;
+            document.getElementById("poll-container").style.display = "block";
+            document.getElementById("poll-setup").style.display = "none";
+            
+            document.getElementById("options").innerHTML = "";
+            data.options.forEach(option => {
+                let button = document.createElement("button");
+                button.innerText = option;
+                button.classList.add("poll-button");
+                button.onclick = () => vote(option);
+                document.getElementById("options").appendChild(button);
+            });
+        }
+    });
 }
 
-// Reset poll
-function resetPoll() {
-    set(ref(db, "votes"), null);
-    alert("Poll reset!");
+// Vote
+function vote(option) {
+    let voteRef = ref(db, "poll/votes/" + option);
+
+    get(voteRef).then(snapshot => {
+        let votes = snapshot.exists() ? snapshot.val() : 0;
+        update(ref(db, "poll/votes/"), { [option]: votes + 1 });
+    });
+
+    alert("Vote submitted! Refresh to see results.");
 }
 
-renderOptions();qr
+// Update Results
+function updateResults() {
+    get(ref(db, "poll/votes/")).then(snapshot => {
+        if (snapshot.exists()) {
+            let votes = snapshot.val();
+            let totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+            let maxVote = Math.max(...Object.values(votes));
+            let minVote = Math.min(...Object.values(votes));
+
+            document.querySelectorAll(".poll-button").forEach(button => {
+                let option = button.innerText;
+                let voteCount = votes[option] || 0;
+                let percentage = (voteCount / totalVotes) * 100;
+
+                button.style.backgroundColor = voteCount === maxVote ? "green" :
+                                               voteCount === minVote ? "red" :
+                                               percentage > 50 ? "blue" : "yellow";
+            });
+        }
+    });
+}
+
+setInterval(updateResults, 5000);
+loadPoll();
