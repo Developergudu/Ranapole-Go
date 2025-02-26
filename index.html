@@ -1,33 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pole Meter</title>
+    <title>Poll Meter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🗳️ Pole Meter</h1>
-        
-        <!-- Form to Add New Poll -->
-        <div id="poll-setup">
-            <input type="text" id="poll-question" placeholder="Enter your question">
-            <div id="options-container">
-                <input type="text" class="poll-option" placeholder="Option 1">
-                <input type="text" class="poll-option" placeholder="Option 2">
-            </div>
-            <button id="add-option">➕ Add Option</button>
-            <button id="start-poll">🚀 Start Poll</button>
-        </div>
-
-        <!-- Poll Display -->
-        <div id="poll-container" style="display: none;">
-            <h2 id="question">Loading question...</h2>
-            <div id="options"></div>
-        </div>
+    <h1>📊 Create a Poll</h1>
+    <input type="text" id="question" placeholder="Enter your question">
+    <div id="options">
+        <input type="text" class="option" placeholder="Option 1">
+        <input type="text" class="option" placeholder="Option 2">
+        <input type="text" class="option" placeholder="Option 3">
+        <input type="text" class="option" placeholder="Option 4">
+        <input type="text" class="option" placeholder="Option 5">
+        <input type="text" class="option" placeholder="Option 6">
     </div>
-
-    <script type="module" src="script.js"></script>
+    <button onclick="createPoll()">✅ Generate QR Code</button>
+    <div id="qrCode"></div>
+    <script src="firebase.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
