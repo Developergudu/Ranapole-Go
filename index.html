@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pole Meter - Live Voting</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Pole Meter - Live Voting</h1>
+    <div id="poll-container">
+        <h2>Current Poll</h2>
+        <div id="options"></div>
+    </div>
+    
+    <div id="timer-container">
+        <button onclick="setTimer(45)">45 sec</button>
+        <button onclick="setTimer(30)">30 sec</button>
+        <button onclick="setTimer(60)">1 min</button>
+        <button onclick="setTimer(0)">Unlimited</button>
+    </div>
+
+    <button onclick="resetPoll()">Reset Poll</button>
+    <a href="history.html"><button>View History</button></a>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

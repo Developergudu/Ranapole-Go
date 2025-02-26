@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote History</title>
+</head>
+<body>
+    <h1>Vote History</h1>
+    <ul id="history"></ul>
+
+    <script src="firebase-config.js"></script>
+    <script>
+        import { db, ref, get } from "./firebase-config.js";
+
+        const historyList = document.getElementById("history");
+
+        get(ref(db, "votes")).then((snapshot) => {
+            if (snapshot.exists()) {
+                let votes = snapshot.val();
+                Object.keys(votes).forEach((key) => {
+                    let li = document.createElement("li");
+                    li.innerText = `Option ${parseInt(key) + 1}: ${votes[key]} votes`;
+                    historyList.appendChild(li);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

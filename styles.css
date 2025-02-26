@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f4f4f4;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#options button {
+    display: block;
+    width: 50%;
+    margin: 10px auto;
+    padding: 15px;
+    font-size: 18px;
+}
